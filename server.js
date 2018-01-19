@@ -18,63 +18,6 @@ bot.on('message', function(event) {
     console.log(event)
     switch (event.message.type) {
         case 'text':
-            event.reply({
-                "type": "template",
-                "altText": "this is a carousel template",
-                "template": {
-                    "type": "carousel",
-                    "columns": [
-                        {
-                            "thumbnailImageUrl": "https://graph.facebook.com/475688475921038/picture?width=400&height=400",
-                            "imageBackgroundColor": "#FFFFFF",
-                            "title": "店名",
-                            "text": "評價",
-                            "actions": [
-                                {
-                                    "type": "postback",
-                                    "label": "Buy",
-                                    "data": "action=buy&itemid=111"
-                                },
-                                {
-                                    "type": "postback",
-                                    "label": "Add to cart",
-                                    "data": "action=add&itemid=111"
-                                },
-                                {
-                                    "type": "uri",
-                                    "label": "View detail",
-                                    "uri": "http://example.com/page/111"
-                                }
-                            ]
-                        },
-                        {
-                            "thumbnailImageUrl": "https://graph.facebook.com/475688475921038/picture?width=400&height=400",
-                            "imageBackgroundColor": "#000000",
-                            "title": "this is menu",
-                            "text": "description",
-                            "actions": [
-                                {
-                                    "type": "postback",
-                                    "label": "Buy",
-                                    "data": "action=buy&itemid=222"
-                                },
-                                {
-                                    "type": "postback",
-                                    "label": "Add to cart",
-                                    "data": "action=add&itemid=222"
-                                },
-                                {
-                                    "type": "uri",
-                                    "label": "View detail",
-                                    "uri": "http://example.com/page/222"
-                                }
-                            ]
-                        }
-                    ],
-                    "imageAspectRatio": "rectangle",
-                    "imageSize": "cover"
-                }
-            })
             
             break
         case 'location':
