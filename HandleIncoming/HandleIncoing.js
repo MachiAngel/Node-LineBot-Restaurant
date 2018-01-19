@@ -61,7 +61,7 @@ const parseFbDataToLineTemplate = (resultData) => {
     
     let limitColumns = []
     if (columns.length > 10) {
-        limitColumns = columns.slice(0,5)
+        limitColumns = columns.slice(0,10)
     }else {
         limitColumns = columns
     }
