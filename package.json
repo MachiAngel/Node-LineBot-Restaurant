@@ -1,0 +1,23 @@
+{
+  "name": "node-linebot-restaurant",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": "8.9.1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.17.1",
+    "express": "^4.16.2",
+    "fb": "^2.0.0",
+    "fbgraph": "^1.4.1",
+    "linebot": "^1.3.0",
+    "moment": "^2.20.1",
+    "moment-timezone": "^0.5.14"
+  }
+}
