@@ -3,7 +3,6 @@ const FB = require('fb')
 const util = require('util')
 
 
-
 const FB_KEYWORD_RESTAURANT = 'FB_KEYWORD_RESTAURANT'
 const FB_KEYWORD_HOT_POT = 'FB_KEYWORD_HOT_POT'
 const FB_KEYWORD_BRUNCH = 'FB_KEYWORD_BRUNCH'

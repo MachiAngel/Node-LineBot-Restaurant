@@ -4,8 +4,7 @@ const express = require('express')
 const HandleIncoing = require('./HandleIncoming/HandleIncoing')
 const bodyParser = require('body-parser')
 const util = require('util')
-const Log = require('log')
-    , log = new Log('info');
+
 
 const avoidDict = {}
 
@@ -102,7 +101,7 @@ bot.on('postback', function (event) {
         //加個機制不讓別人一直按
         if (event.source.type = 'user') {
             if (avoidDict[event.source.userId] !== undefined) {
-                return event.reply('收尋中請稍後')
+                return event.reply('搜尋中請稍後')
             }else {
                 avoidDict[event.source.userId] = event.source.userId
             }
