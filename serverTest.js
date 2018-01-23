@@ -61,7 +61,7 @@ bot.on('message', function(event) {
             //     }).catch(e => {
             //      console.log(e.message)
             // });
-            
+ 
             break;
         
         default:
@@ -123,12 +123,12 @@ bot.on('postback', function (event) {
                 avoidDict[event.source.userId] = undefined
                 return event.reply([{type:'text',text:'搜尋結果如下:'},template])
             }).then((data) => {
-            console.log('Success',data)
-        }).catch(e => {
-            console.log(e.message)
+                console.log('Success',data)
+            }).catch(e => {
+             console.log(e.message)
         });
     }
-    
+  
     // console.log(`resultDict:${util.inspect(searchDict, false, null)}`)
 });
 
@@ -147,7 +147,7 @@ app.post('/webhook', parser, function (req, res) {
     bot.parse(req.body);
     // console.log(req.body)
     console.log('------')
-    return res.json({})
+    return res.json({});
 });
 
 
