@@ -138,7 +138,7 @@ const getFacebookRestaurantData = async (lat,lon,distance,q='restaurant') => {
         }
         
         const result = await FB.api(`/search?type=place&q=${q}&center=${lat}, ${lon}&locale=zh-TW&limit=50&distance=${distance}`,fieldObject)
-        console.log(util.inspect(result, false, null))
+        
         const restaurants = result.data
         
         let next
@@ -147,8 +147,7 @@ const getFacebookRestaurantData = async (lat,lon,distance,q='restaurant') => {
         }
         
         while (next !== undefined) {
-            console.log(next)
-            console.log(`restaurants:${restaurants.length}`)
+            
             const result2 = await axios.get(next)
             restaurants.push.apply(restaurants, result2.data.data)
             if (result2.data.paging === undefined) {
@@ -159,7 +158,7 @@ const getFacebookRestaurantData = async (lat,lon,distance,q='restaurant') => {
 
         }
         
-        console.log(`restaurants:${restaurants.length}`)
+        
         return restaurants
         
     }catch (e){
@@ -262,7 +261,7 @@ const getActionsOfColumn = (id,location,phone) => {
     action3['type'] = 'uri'
     
     if (phone != undefined) {
-        //console.log(phone.replace(' ','').replace('-',''))
+        
         action3['label'] = '店家電話'
         action3['uri'] = `tel://${phone.replace(/[^0-9]/g,"")}`
     }else {
@@ -287,7 +286,7 @@ const getDistance = async (originLocation,destinationLocation) => {
     try {
         const result = await axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${originLocation.latitude},${originLocation.longitude}&destinations=${destinationLocation.latitude},${destinationLocation.longitude}&key=AIzaSyCUmuZgHc1wAdmjbVF3QJEtH475OAI6H1g`)
         if (result.data.rows[0].elements[0].status === 'OK') {
-            console.log('xxxxx')
+            
             return result.data.rows[0].elements[0].distance.value
         }else {
             return undefined
@@ -319,7 +318,7 @@ function distance(lat1, lon1, lat2, lon2, unit) {
     return dist
 }
 
-console.log(distance(24.142474,120.651377,24.143474,120.655377,'K'))
+
 
 
 module.exports.getFacebookRestaurantData = getFacebookRestaurantData

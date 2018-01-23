@@ -4,8 +4,7 @@ const express = require('express')
 const HandleIncoing = require('./HandleIncoming/HandleIncoing')
 const bodyParser = require('body-parser')
 const util = require('util')
-const Log = require('log')
-    , log = new Log('info');
+
 
 const avoidDict = {}
 
