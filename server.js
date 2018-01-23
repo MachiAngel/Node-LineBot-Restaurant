@@ -156,6 +156,7 @@ app.post('/webhook', parser, function (req, res) {
 let server = app.listen(process.env.PORT || 8080, function() {
     let port = server.address().port;
     console.log("My Line bot App running on port", port);
+    console.log(`process env : ${process.env}`)
 });
 
 
