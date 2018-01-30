@@ -31,7 +31,7 @@ const cloumnDesDict = {
     }
 }
 
-
+//準備搜尋餐廳action
 const prepareSearchActions = (searchType, location) => {
     
     const postbackDict1 = {
@@ -39,14 +39,14 @@ const prepareSearchActions = (searchType, location) => {
         data:{
             latitude:`${location.latitude}`,
             longitude:`${location.longitude}`,
-            distance:10000,
+            distance:5000,
             queryType:'rate',
             q:`${cloumnDesDict[searchType].title}`
         }
     }
     const action1 = {
         "type":"postback",
-        "label":"評分最高(10公里內)",
+        "label":"評分最高(5公里內)",
         "data":JSON.stringify(postbackDict1)
     }
     
@@ -55,14 +55,14 @@ const prepareSearchActions = (searchType, location) => {
         data:{
             latitude:location.latitude,
             longitude:location.longitude,
-            distance:10000,
+            distance:5000,
             queryType:'checkin',
             q:`${cloumnDesDict[searchType].title}`
         }
     }
     const action2 = {
         "type":"postback",
-        "label":"最多打卡(10公里內)",
+        "label":"最多打卡(5公里內)",
         "data":JSON.stringify(postbackDict2)
     }
     const postbackDict3 = {
@@ -70,7 +70,7 @@ const prepareSearchActions = (searchType, location) => {
         data: {
             latitude:location.latitude,
             longitude:location.longitude,
-            distance:5000,
+            distance:2000,
             queryType:'all',
             q:`${cloumnDesDict[searchType].title}`
         }
@@ -78,7 +78,7 @@ const prepareSearchActions = (searchType, location) => {
     
     const action3 = {
         "type":"postback",
-        "label":"最近地標(5公里內)",
+        "label":"最近地標(2公里內)",
         "data":JSON.stringify(postbackDict3)
     }
     return [action1,action2,action3]
@@ -97,6 +97,7 @@ const getSearchTemplate = (location) => {
     }
 }
 
+//準備搜尋餐廳的Columns
 const prepareSearchColumns = (location) => {
     const column1 = getColumn(FB_KEYWORD_RESTAURANT,location)
     const column2 = getColumn(FB_KEYWORD_BBQ,location)
@@ -106,6 +107,7 @@ const prepareSearchColumns = (location) => {
     
 }
 
+//準備餐廳的Column
 const getColumn = (searchType,location) => {
     
     const actions = prepareSearchActions(searchType, location)
@@ -242,7 +244,7 @@ const parseFbDataToLineTemplate = (resultData) => {
     
     return carouselTemplate
 }
-
+//餐廳資料 Column
 const getActionsOfColumn = (id,location,phone) => {
     
     //const actions = []
@@ -280,6 +282,7 @@ const getActionsOfColumn = (id,location,phone) => {
 //     console.log(e)
 // })
 
+
 const getDistance = async (originLocation,destinationLocation) => {
     // 24.142474,120.651377
     
@@ -304,19 +307,7 @@ const getDistance = async (originLocation,destinationLocation) => {
 
 
 
-function distance(lat1, lon1, lat2, lon2, unit) {
-    const radlat1 = Math.PI * lat1/180
-    const radlat2 = Math.PI * lat2/180
-    const theta = lon1-lon2
-    const radtheta = Math.PI * theta/180
-    let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-    dist = Math.acos(dist)
-    dist = dist * 180/Math.PI
-    dist = dist * 60 * 1.1515
-    if (unit=="K") { dist = dist * 1.609344 }
-    if (unit=="M") { dist = dist * 0.8684 }
-    return dist
-}
+
 
 
 

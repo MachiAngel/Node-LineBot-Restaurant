@@ -36,8 +36,8 @@ bot.on('message', function(event) {
     // console.log(event)
     switch (event.message.type) {
         case 'text':
-            
-            // event.reply(searchTypeTemplate)
+            console.log()
+            event.reply(event.message.text)
             break
         case 'location':
             console.log(event.message)
@@ -114,7 +114,6 @@ bot.on('postback', function (event) {
             .then(result =>{
                 
                 const sortedPlaceArray = HandleIncoing.getResultOfsortedFBData(result,queryType)
-                
                 const template = HandleIncoing.parseFbDataToLineTemplate(sortedPlaceArray)
                 //console.log(template)
                 //console.log(util.inspect(template, false, null))

@@ -1,9 +1,12 @@
 require('dotenv').config()
+const {ACTION_TEXT_BANK_RATE, ACTION_TEXT_BEST_RATE, ACTION_TEXT_WORNG_COMMAND, ACTION_TEXT_PASS, ACTION_TEXT_NO_MATCH, ACTION_TEXT_YAHOO_MOVIE} = require('./util/constant')
 const linebot = require('linebot')
 const express = require('express')
-const HandleIncoing = require('./HandleIncoming/HandleIncoing')
+const HandleIncoming = require('./HandleIncoming/HandleIncoming_Text')
 const bodyParser = require('body-parser')
 const util = require('util')
+const {firebaseManager} = require('./db/fetchFirebase')
+
 
 
 const avoidDict = {}
@@ -36,16 +39,63 @@ bot.on('message', function(event) {
     // console.log(event)
     switch (event.message.type) {
         case 'text':
-            
-            // event.reply(searchTypeTemplate)
-            break
+
+        const originalString = event.message.text
+        const messageObject = HandleIncoming.switchIncomingType(originalString)
+
+        switch (messageObject.type) {
+            case ACTION_TEXT_YAHOO_MOVIE:
+                firebaseManager.getYahooMovieDataTemplate()
+                  .then(resultTemplate => {
+                    event.reply(resultTemplate)
+                    console.log(resultTemplate);
+                }).catch(e => {
+                    console.log('ACTION_TEXT_YAHOO_MOVIE error')
+                    replayTextMessage(event, e.message)
+                })
+
+                break
+            case ACTION_TEXT_BANK_RATE:
+                //TODO收尋條件
+                console.log(`messageObject.value:${messageObject.value}`);
+                firebaseManager.getFireBaseDataByBankCode(messageObject.value)
+                  .then(resultString => {
+                    replayTextMessage(event, resultString)
+                }).catch(e => {
+                    console.log('ACTION_TEXT_BANK_RATE error')
+                    replayTextMessage(event, e.message)
+                })
+                break
+            case ACTION_TEXT_BEST_RATE:
+
+                firebaseManager.getFireBaseBestRateByCurrency(messageObject.value)
+                    .then((resultString) => {
+                        replayTextMessage(event, resultString)
+                    }).catch(e => {
+                        replayTextMessage(event, e.message)
+                })
+
+                break
+            case ACTION_TEXT_WORNG_COMMAND:
+                event.reply('此條件查無此資料，更多使用方式請輸入/help').then((data) => {
+
+                }).catch((error) => {
+
+                });
+                break
+            case ACTION_TEXT_PASS:
+                break
+            case ACTION_TEXT_NO_MATCH:
+                break
+        }
+        break
         case 'location':
             console.log(event.message)
             if (event.message.latitude === undefined || event.message.longitude === undefined) {
                 event.reply('未獲取到經緯度，無法提供服務')
                 return
             }
-            
+
             const searchTemplate = HandleIncoing.getSearchTemplate({latitude:event.message.latitude,longitude:event.message.longitude})
             // console.log(util.inspect(searchTemplate, false, null))
             event.reply(searchTemplate)
@@ -60,15 +110,15 @@ bot.on('message', function(event) {
             //     }).catch(e => {
             //      console.log(e.message)
             // });
-            
+
             break;
-        
+
         default:
             //event.reply('Unknow message: ' + JSON.stringify(event));
             break;
     }
-    
-    
+
+
 });
 
 //加入 跟 解除封鎖
@@ -91,10 +141,10 @@ bot.on('leave', function (event) {
 
 //按鈕回傳 使用者不用再打字
 bot.on('postback', function (event) {
-    
+
     console.log(`postback event:${event}`);
     console.log(`postback event source:${event.source}`);
-    
+
     //event.reply('postback: ' + event.postback.data);
     const resultDict = JSON.parse(event.postback.data)
     if (resultDict.action === 'search') {
@@ -106,19 +156,19 @@ bot.on('postback', function (event) {
                 avoidDict[event.source.userId] = event.source.userId
             }
         }
-        
+
         //拿到自定義action 的 data
         const {latitude, longitude, distance ,queryType ,q} = resultDict.data
         console.log(`queryType:${queryType}`)
         HandleIncoing.getFacebookRestaurantData(latitude, longitude, distance, q)
             .then(result =>{
-                
+
                 const sortedPlaceArray = HandleIncoing.getResultOfsortedFBData(result,queryType)
-                
+
                 const template = HandleIncoing.parseFbDataToLineTemplate(sortedPlaceArray)
                 //console.log(template)
                 //console.log(util.inspect(template, false, null))
-                
+
                 avoidDict[event.source.userId] = undefined
                 return event.reply([{type:'text',text:'搜尋結果如下:'},template])
             }).then((data) => {
@@ -127,12 +177,18 @@ bot.on('postback', function (event) {
             console.log(e.message)
         });
     }
-    
+
     // console.log(`resultDict:${util.inspect(searchDict, false, null)}`)
 });
 
 
+const replayTextMessage = (event,text) => {
+    event.reply(text).then((data) => {
 
+    }).catch((error) => {
+
+    })
+}
 
 //The parser assumes that the request body has never been parsed by any body parser before,
 // so it must be placed BEFORE any generic body parser e.g. app.use(bodyParser.json());
@@ -157,5 +213,3 @@ let server = app.listen(process.env.PORT || 8080, function() {
     console.log("My Line bot App running on port", port);
     console.log(`process env : ${process.env}`)
 });
-
-
