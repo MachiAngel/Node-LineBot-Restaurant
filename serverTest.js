@@ -1,7 +1,7 @@
 require('dotenv').config()
 const linebot = require('linebot')
 const express = require('express')
-const HandleIncoing = require('./HandleIncoming/HandleIncoing')
+const HandleIncoing = require('./HandleIncoming/HandleIncoming_Location')
 const bodyParser = require('body-parser')
 const util = require('util')
 

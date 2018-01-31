@@ -2,7 +2,8 @@ require('dotenv').config()
 const {ACTION_TEXT_BANK_RATE, ACTION_TEXT_BEST_RATE, ACTION_TEXT_WORNG_COMMAND, ACTION_TEXT_PASS, ACTION_TEXT_NO_MATCH, ACTION_TEXT_YAHOO_MOVIE} = require('./util/constant')
 const linebot = require('linebot')
 const express = require('express')
-const HandleIncoming = require('./HandleIncoming/HandleIncoming_Text')
+const HandleIncoming_TEXT = require('./HandleIncoming/HandleIncoming_Text')
+const HandleIncoming_Location = require('./HandleIncoming/HandleIncoming_Location')
 const bodyParser = require('body-parser')
 const util = require('util')
 const {firebaseManager} = require('./db/fetchFirebase')
@@ -41,7 +42,7 @@ bot.on('message', function(event) {
         case 'text':
 
         const originalString = event.message.text
-        const messageObject = HandleIncoming.switchIncomingType(originalString)
+        const messageObject = HandleIncoming_TEXT.switchIncomingType(originalString)
 
         switch (messageObject.type) {
             case ACTION_TEXT_YAHOO_MOVIE:
@@ -96,7 +97,7 @@ bot.on('message', function(event) {
                 return
             }
 
-            const searchTemplate = HandleIncoing.getSearchTemplate({latitude:event.message.latitude,longitude:event.message.longitude})
+            const searchTemplate = HandleIncoming_Location.getSearchTemplate({latitude:event.message.latitude,longitude:event.message.longitude})
             // console.log(util.inspect(searchTemplate, false, null))
             event.reply(searchTemplate)
             // HandleIncoing.getFacebookRestaurantData(event.message.latitude,event.message.longitude,10000)
