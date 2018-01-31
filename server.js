@@ -161,12 +161,12 @@ bot.on('postback', function (event) {
         //拿到自定義action 的 data
         const {latitude, longitude, distance ,queryType ,q} = resultDict.data
         console.log(`queryType:${queryType}`)
-        HandleIncoing.getFacebookRestaurantData(latitude, longitude, distance, q)
+        HandleIncoming_Location.getFacebookRestaurantData(latitude, longitude, distance, q)
             .then(result =>{
 
-                const sortedPlaceArray = HandleIncoing.getResultOfsortedFBData(result,queryType)
+                const sortedPlaceArray = HandleIncoming_Location.getResultOfsortedFBData(result,queryType)
 
-                const template = HandleIncoing.parseFbDataToLineTemplate(sortedPlaceArray)
+                const template = HandleIncoming_Location.parseFbDataToLineTemplate(sortedPlaceArray)
                 //console.log(template)
                 //console.log(util.inspect(template, false, null))
 
