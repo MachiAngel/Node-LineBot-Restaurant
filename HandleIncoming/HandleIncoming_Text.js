@@ -51,7 +51,7 @@ const switchIncomingType = (string) => {
     const array = removeSlashString.split(' ')
     const firstElement = array[0]
     const secondElement = array[1]
-
+    
     //檢查是否查詢最佳匯率 是的話 直接回傳 "幣別名稱"
     if (firstElement === 'best') {
 
