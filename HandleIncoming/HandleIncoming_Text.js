@@ -1,6 +1,13 @@
 const {currencyETCDict, currencyETFDict, bankNameToBankCodeDict} = require('../util/constant')
 const { MESSAGE_TYPE_BANK_RATE, MESSAGE_TYPE_BEST_RATE, MESSAGE_TYPE_PASS, MESSAGE_TYPE_WORNG_COMMAND, MESSAGE_TYPE_NO_MATCH} = require('../util/constant')
-const {ACTION_TEXT_BANK_RATE, ACTION_TEXT_BEST_RATE, ACTION_TEXT_WORNG_COMMAND, ACTION_TEXT_PASS, ACTION_TEXT_NO_MATCH, ACTION_TEXT_YAHOO_MOVIE} = require('../util/constant')
+const {ACTION_TEXT_BANK_RATE,
+    ACTION_TEXT_BEST_RATE,
+    ACTION_TEXT_WORNG_COMMAND,
+    ACTION_TEXT_PASS,
+    ACTION_TEXT_NO_MATCH,
+    ACTION_TEXT_YAHOO_MOVIE,
+    ACTION_TEXT_DRAW_BEAUTY
+} = require('../util/constant')
 
 // const MESSAGE_TYPE_BANK_RATE = 'messageTypeBankRate'
 // const MESSAGE_TYPE_BEST_RATE = 'messageTypeBestRate'
@@ -26,7 +33,18 @@ const switchIncomingType = (string) => {
         if (string === 'movie' || string === 'Movie' || string === '電影') {
           return {type:ACTION_TEXT_YAHOO_MOVIE,value:string}
         }
-
+        //只有第一個字是抽能近來
+        if (string.substring(0,1) === '抽') {
+            if (string === '抽' ) {
+                return {type:ACTION_TEXT_DRAW_BEAUTY,value:1}
+            }
+            const numberString = string.replace('抽','')
+            if (Number(numberString)) {
+                return {type:ACTION_TEXT_DRAW_BEAUTY,value:Number(numberString)}
+            }
+            
+        }
+        
         return {type:ACTION_TEXT_PASS,value:string}
     }
     const removeSlashString = string.substring(1,string.length)

@@ -1,5 +1,5 @@
 require('dotenv').config()
-const {ACTION_TEXT_BANK_RATE, ACTION_TEXT_BEST_RATE, ACTION_TEXT_WORNG_COMMAND, ACTION_TEXT_PASS, ACTION_TEXT_NO_MATCH, ACTION_TEXT_YAHOO_MOVIE} = require('./util/constant')
+const {ACTION_TEXT_BANK_RATE, ACTION_TEXT_BEST_RATE, ACTION_TEXT_WORNG_COMMAND, ACTION_TEXT_PASS, ACTION_TEXT_NO_MATCH, ACTION_TEXT_YAHOO_MOVIE, ACTION_TEXT_DRAW_BEAUTY} = require('./util/constant')
 const linebot = require('linebot')
 const express = require('express')
 const HandleIncoming_TEXT = require('./HandleIncoming/HandleIncoming_Text')
@@ -7,8 +7,7 @@ const HandleIncoming_Location = require('./HandleIncoming/HandleIncoming_Locatio
 const bodyParser = require('body-parser')
 const util = require('util')
 const {firebaseManager} = require('./db/fetchFirebase')
-
-
+const beautyManager = require('./manager/fetchBeautyManager')
 
 const avoidDict = {}
 
@@ -43,7 +42,7 @@ bot.on('message', function(event) {
 
         const originalString = event.message.text
         const messageObject = HandleIncoming_TEXT.switchIncomingType(originalString)
-
+        
         switch (messageObject.type) {
             case ACTION_TEXT_YAHOO_MOVIE:
                 firebaseManager.getYahooMovieDataTemplate()
@@ -54,7 +53,7 @@ bot.on('message', function(event) {
                     console.log('ACTION_TEXT_YAHOO_MOVIE error')
                     replayTextMessage(event, e.message)
                 })
-
+                
                 break
             case ACTION_TEXT_BANK_RATE:
                 //TODO收尋條件
@@ -87,6 +86,26 @@ bot.on('message', function(event) {
             case ACTION_TEXT_PASS:
                 break
             case ACTION_TEXT_NO_MATCH:
+                break
+            case ACTION_TEXT_DRAW_BEAUTY:
+                const drawValue =  messageObject.value
+                if (drawValue === 1) {
+                    beautyManager.getOneRandomImageTemplate(drawValue).then(imageTemplateArray => {
+                        event.reply(imageTemplateArray)
+                    }).catch(e => {
+                        event.reply(e.message)
+                    })
+                }else if (drawValue < 6 && drawValue > 0) {
+                    beautyManager.getRandomImagesTemplate(drawValue).then(imageTemplateArray => {
+                        event.reply(imageTemplateArray)
+                    }).catch(e => {
+                        event.reply(e.message)
+                    })
+                }else {
+                    event.reply(`最多只能抽五張~.~`)
+                }
+                
+                
                 break
         }
         break
