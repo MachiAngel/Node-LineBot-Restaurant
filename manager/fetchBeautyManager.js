@@ -10,35 +10,14 @@ const getOneRandomImageTemplate = async () => {
         if (!results.length) {
             throw new Error('server error 500')
         }
-        // const object1 = {type: "text",text:`圖片推文數: ${results[0].rate}`}
-        // const object2 = {
-        //     "type": "image",
-        //     "originalContentUrl": results[0].url_link,
-        //     "previewImageUrl": results[0].url_link
-        // }
-        
-        const template = {
-            "type": "template",
-            "altText": "正妹圖~",
-            "template": {
-                "type": "buttons",
-                "thumbnailImageUrl": results[0].url_link,
-                "imageAspectRatio": "square",
-                "imageSize": "contain",
-                "imageBackgroundColor": "#f7cdec",
-                "title": results[0].title,
-                "text": `圖片推文數: ${results[0].rate}`,
-                "actions": [
-                    {
-                        "type": "uri",
-                        "label": "PTT網址連結",
-                        "uri": results[0].article_link
-                    }
-                ]
-            }
+        const object1 = {type: "text",text:`${results[0].title}\n🔥圖片推文數: ${results[0].rate}🔥\nPtt連結👇👇👇\n ${results[0].article_link}`}
+        const object2 = {
+            "type": "image",
+            "originalContentUrl": results[0].url_link,
+            "previewImageUrl": results[0].url_link
         }
         
-        return template
+        return [object1,object2]
     }catch (e) {
         throw e
     }
