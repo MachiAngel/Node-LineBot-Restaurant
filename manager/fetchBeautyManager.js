@@ -1,20 +1,20 @@
-
 const {pgdb} = require('../db/pgdb')
+const {checkFace} = require('./faceCheck')
 
 const getOneRandomImageTemplate = async () => {
     try {
-        const results = await pgdb('images')
-            .join('articles', 'images.article_link', 'articles.article_link')
-            .select('images.url_link', 'articles.rate','articles.article_link','articles.title')
+        const results = await pgdb('ptt_beauty_image')
+            .join('ptt_beauty_article', 'ptt_beauty_image.article_id', 'ptt_beauty_article.article_id')
+            .select('ptt_beauty_image.image_url', 'ptt_beauty_article.rate','ptt_beauty_article.article_url','ptt_beauty_article.title')
             .orderBy(pgdb.raw('RANDOM()')).limit(1)
         if (!results.length) {
             throw new Error('server error 500')
         }
-        const object1 = {type: "text",text:`${results[0].title}\n🔥圖片推文數: ${results[0].rate}🔥\nPtt連結👇👇👇\n ${results[0].article_link}`}
+        const object1 = {type: "text",text:`${results[0].title}\n🔥圖片推文數: ${results[0].rate}🔥\nPtt連結👇👇👇\n ${results[0].article_url}`}
         const object2 = {
             "type": "image",
-            "originalContentUrl": results[0].url_link,
-            "previewImageUrl": results[0].url_link
+            "originalContentUrl": results[0].image_url,
+            "previewImageUrl": results[0].image_url
         }
         
         return [object1,object2]
@@ -23,43 +23,34 @@ const getOneRandomImageTemplate = async () => {
     }
 }
 
-
-
 const getRandomImagesTemplate = async (count = 1) => {
     try {
-        const results = await pgdb('images').orderBy(pgdb.raw('RANDOM()')).limit(count)
+        const results = await pgdb('ptt_beauty_image').orderBy(pgdb.raw('RANDOM()')).limit(count)
         if (!results.length) {
             throw new Error('server error 500')
         }
-        
         const lineImageArray = results.map(result => {
             return {
                 "type": "image",
-                "originalContentUrl": result.url_link,
-                "previewImageUrl": result.url_link
+                "originalContentUrl": result.image_url,
+                "previewImageUrl": result.image_url
             }
         })
+        
+        try{
+            checkFace(results,pgdb).then(results => {
+                console.log(results)
+            })
+        }catch (e) {
+            console.log(e.message)
+        }
+        
         return lineImageArray
     }catch (e) {
         throw e
     }
 }
 
-
-// getOneRandomImageTemplate().then(results => {
-//     console.log(results)
-// }).catch(e => {
-//     console.log(e.message)
-//     //console.log(e.message)
-// })
-
-
-// getRandomImagesTemplate(5).then(results => {
-//     console.log(results)
-// }).catch(e => {
-//     console.log(e.message)
-//     //console.log(e.message)
-// })
 
 module.exports = {
     getOneRandomImageTemplate,

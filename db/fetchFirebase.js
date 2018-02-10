@@ -4,12 +4,10 @@ const {currencyETCDict, currencyETFDict, bankNameToBankCodeDict} = require('../u
 
 
 class FetchFireBaseData {
-
   //回傳string拿來餵給line
   async getFireBaseBestRateByCurrency(currency) {
 
       try {
-
         const snapshot = await FirebaseDb.ref(`/BestRate/${currency}`).once('value')
         const resultDict = snapshot.val()
         if (resultDict == null) {
