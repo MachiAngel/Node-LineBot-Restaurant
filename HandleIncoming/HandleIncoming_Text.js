@@ -6,7 +6,8 @@ const {ACTION_TEXT_BANK_RATE,
     ACTION_TEXT_PASS,
     ACTION_TEXT_NO_MATCH,
     ACTION_TEXT_YAHOO_MOVIE,
-    ACTION_TEXT_DRAW_BEAUTY
+    ACTION_TEXT_DRAW_BEAUTY,
+    ACTION_TEXT_SEARCH_PTT_MOVIE
 } = require('../util/constant')
 
 // const MESSAGE_TYPE_BANK_RATE = 'messageTypeBankRate'
@@ -29,10 +30,17 @@ const haveFristSlash = (text) => {
 const switchIncomingType = (string) => {
 
     if (!haveFristSlash(string)) {
-
+        
+        //最近yahoo電影
         if (string === 'movie' || string === 'Movie' || string === '電影') {
           return {type:ACTION_TEXT_YAHOO_MOVIE,value:string}
         }
+        //找電影ptt
+        if (string.substr(0,3) === '電影 ') {
+            const queryString = string.replace('電影 ','').trim()
+            return {type:ACTION_TEXT_SEARCH_PTT_MOVIE,value:queryString}
+        }
+        
         //只有第一個字是抽能近來
         if (string.substring(0,1) === '抽') {
             if (string === '抽' ) {

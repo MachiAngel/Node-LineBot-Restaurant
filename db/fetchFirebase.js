@@ -6,7 +6,7 @@ const {currencyETCDict, currencyETFDict, bankNameToBankCodeDict} = require('../u
 class FetchFireBaseData {
   //回傳string拿來餵給line
   async getFireBaseBestRateByCurrency(currency) {
-
+        
       try {
         const snapshot = await FirebaseDb.ref(`/BestRate/${currency}`).once('value')
         const resultDict = snapshot.val()
@@ -70,7 +70,7 @@ class FetchFireBaseData {
     }
 
   }
-
+  
   parseBankResultDictToString({bankName,bankCode,rateList,rateTime}){
       let resultString = `⭐${bankCode} ${bankName} 最新匯率⭐`
       resultString += '\n'
@@ -100,7 +100,7 @@ class FetchFireBaseData {
 
   //拿movie電影 且回傳line template
   async getYahooMovieDataTemplate(){
-
+    
     try {
 
       const snapshot = await FirebaseDb.ref(`/YahooTopMovie/`).once('value')
@@ -113,21 +113,16 @@ class FetchFireBaseData {
     }catch (e) {
       throw e
     }
-
+    
   }
-
+  //變成吃所有筆數 array ->回傳20筆 分兩次
   parseFirebaseMovieDataToLineTemplate(resultArray){
       //console.log('resultData:' + resultData)
       const columns = resultArray.map((movieObject) => {
-          const {imdb_rate
-            , movieTime_url
-            , movie_length
-            , movie_name_ch
-            , movie_name_en
-            , poster_url
-            , release_date
-            , yahoo_rate
-            , yahoo_rate_count} = movieObject
+          const {imdb_rate, movieTime_url, movie_length
+            , movie_name_ch, movie_name_en, poster_url
+            , release_date, yahoo_rate, yahoo_rate_count
+              , pttBad, pttGood, searchPttString} = movieObject
 
           //handle para..
           let title = ''
@@ -136,7 +131,7 @@ class FetchFireBaseData {
           }else {
               title = movie_name_ch
           }
-
+          
           const action1 = {
               "type": "uri",
               "label": "電影時刻表",

@@ -1,5 +1,5 @@
 require('dotenv').config()
-const {ACTION_TEXT_BANK_RATE, ACTION_TEXT_BEST_RATE, ACTION_TEXT_WORNG_COMMAND, ACTION_TEXT_PASS, ACTION_TEXT_NO_MATCH, ACTION_TEXT_YAHOO_MOVIE, ACTION_TEXT_DRAW_BEAUTY} = require('./util/constant')
+const {ACTION_TEXT_BANK_RATE, ACTION_TEXT_BEST_RATE, ACTION_TEXT_WORNG_COMMAND, ACTION_TEXT_PASS, ACTION_TEXT_NO_MATCH, ACTION_TEXT_YAHOO_MOVIE, ACTION_TEXT_DRAW_BEAUTY,ACTION_TEXT_SEARCH_PTT_MOVIE} = require('./util/constant')
 const linebot = require('linebot')
 const express = require('express')
 const HandleIncoming_TEXT = require('./HandleIncoming/HandleIncoming_Text')
@@ -8,6 +8,7 @@ const bodyParser = require('body-parser')
 const util = require('util')
 const {firebaseManager} = require('./db/fetchFirebase')
 const beautyManager = require('./manager/fetchBeautyManager')
+const pttMovieManager = require('./manager/fetchMoiveManager')
 
 const avoidDict = {}
 
@@ -39,76 +40,79 @@ bot.on('message', function(event) {
     // console.log(event)
     switch (event.message.type) {
         case 'text':
-
-        const originalString = event.message.text
-        const messageObject = HandleIncoming_TEXT.switchIncomingType(originalString)
-        
-        switch (messageObject.type) {
-            case ACTION_TEXT_YAHOO_MOVIE:
-                firebaseManager.getYahooMovieDataTemplate()
-                  .then(resultTemplate => {
-                    event.reply(resultTemplate)
-                    console.log(resultTemplate);
-                }).catch(e => {
-                    console.log('ACTION_TEXT_YAHOO_MOVIE error')
-                    replayTextMessage(event, e.message)
-                })
-                
-                break
-            case ACTION_TEXT_BANK_RATE:
-                //TODO收尋條件
-                console.log(`messageObject.value:${messageObject.value}`);
-                firebaseManager.getFireBaseDataByBankCode(messageObject.value)
-                  .then(resultString => {
-                    replayTextMessage(event, resultString)
-                }).catch(e => {
-                    console.log('ACTION_TEXT_BANK_RATE error')
-                    replayTextMessage(event, e.message)
-                })
-                break
-            case ACTION_TEXT_BEST_RATE:
-
-                firebaseManager.getFireBaseBestRateByCurrency(messageObject.value)
-                    .then((resultString) => {
+            const originalString = event.message.text
+            const messageObject = HandleIncoming_TEXT.switchIncomingType(originalString)
+            switch (messageObject.type) {
+                case ACTION_TEXT_YAHOO_MOVIE:
+                    pttMovieManager.getYahooMovieDataTemplate()
+                        .then(resultTemplate => {
+                            event.reply(resultTemplate)
+                    }).catch(e => {
+                            replayTextMessage(event, e.message)
+                    })
+                    break
+                case ACTION_TEXT_SEARCH_PTT_MOVIE:
+                    const queryString = messageObject.value
+                    pttMovieManager.getPttMoiveTemplate(queryString).then(resultTemplate => {
+                        event.reply(resultTemplate)
+                        console.log(resultTemplate);
+                    }).catch(e => {
+                        console.log('ACTION_TEXT_SEARCH_PTT_MOVIE error')
+                        replayTextMessage(event, e.message)
+                    })
+                    break
+                case ACTION_TEXT_BANK_RATE:
+                    //TODO收尋條件
+                    console.log(`messageObject.value:${messageObject.value}`);
+                    firebaseManager.getFireBaseDataByBankCode(messageObject.value)
+                      .then(resultString => {
                         replayTextMessage(event, resultString)
                     }).catch(e => {
+                        console.log('ACTION_TEXT_BANK_RATE error')
                         replayTextMessage(event, e.message)
-                })
-
-                break
-            case ACTION_TEXT_WORNG_COMMAND:
-                event.reply('此條件查無此資料，更多使用方式請輸入/help').then((data) => {
-
-                }).catch((error) => {
-
-                });
-                break
-            case ACTION_TEXT_PASS:
-                break
-            case ACTION_TEXT_NO_MATCH:
-                break
-            case ACTION_TEXT_DRAW_BEAUTY:
-                const drawValue =  messageObject.value
-                if (drawValue === 1) {
-                    beautyManager.getOneRandomImageTemplate(drawValue).then(imageTemplateArray => {
-                        event.reply(imageTemplateArray)
-                    }).catch(e => {
-                        event.reply(e.message)
                     })
-                }else if (drawValue < 6 && drawValue > 0) {
-                    beautyManager.getRandomImagesTemplate(drawValue).then(imageTemplateArray => {
-                        event.reply(imageTemplateArray)
-                    }).catch(e => {
-                        event.reply(e.message)
+                    break
+                case ACTION_TEXT_BEST_RATE:
+    
+                    firebaseManager.getFireBaseBestRateByCurrency(messageObject.value)
+                        .then((resultString) => {
+                            replayTextMessage(event, resultString)
+                        }).catch(e => {
+                            replayTextMessage(event, e.message)
                     })
-                }else {
-                    event.reply(`最多只能抽五張~.~`)
-                }
-                
-                
-                break
-        }
-        break
+    
+                    break
+                case ACTION_TEXT_WORNG_COMMAND:
+                    event.reply('此條件查無此資料，更多使用方式請輸入/help').then((data) => {
+    
+                    }).catch((error) => {
+    
+                    });
+                    break
+                case ACTION_TEXT_PASS:
+                    break
+                case ACTION_TEXT_NO_MATCH:
+                    break
+                case ACTION_TEXT_DRAW_BEAUTY:
+                    const drawValue =  messageObject.value
+                    if (drawValue === 1) {
+                        beautyManager.getOneRandomImageTemplate(drawValue).then(imageTemplateArray => {
+                            event.reply(imageTemplateArray)
+                        }).catch(e => {
+                            event.reply(e.message)
+                        })
+                    }else if (drawValue < 6 && drawValue > 0) {
+                        beautyManager.getRandomImagesTemplate(drawValue).then(imageTemplateArray => {
+                            event.reply(imageTemplateArray)
+                        }).catch(e => {
+                            event.reply(e.message)
+                        })
+                    }else {
+                        event.reply(`最多只能抽五張~.~`)
+                    }
+                    break
+            }
+            break
         case 'location':
             console.log(event.message)
             if (event.message.latitude === undefined || event.message.longitude === undefined) {
@@ -162,8 +166,8 @@ bot.on('leave', function (event) {
 //按鈕回傳 使用者不用再打字
 bot.on('postback', function (event) {
 
-    console.log(`postback event:${event}`);
-    console.log(`postback event source:${event.source}`);
+    // console.log(`postback event:${event}`);
+    // console.log(`postback event source:${event.source}`);
 
     //event.reply('postback: ' + event.postback.data);
     const resultDict = JSON.parse(event.postback.data)
@@ -176,7 +180,6 @@ bot.on('postback', function (event) {
                 avoidDict[event.source.userId] = event.source.userId
             }
         }
-
         //拿到自定義action 的 data
         const {latitude, longitude, distance ,queryType ,q} = resultDict.data
         console.log(`queryType:${queryType}`)
@@ -197,8 +200,15 @@ bot.on('postback', function (event) {
             console.log(e.message)
         });
     }
-
-    // console.log(`resultDict:${util.inspect(searchDict, false, null)}`)
+    
+    if(resultDict.action === 'ptt_movie_article') {
+        //拿到自定義action 的 data
+        const {title, title_s} = resultDict.data
+        pttMovieManager.getPttMovieArticlesTemplate(title, title_s).then(resultTemplate => {
+            event.reply(resultTemplate)
+        })
+    }
+    
 });
 
 

@@ -236,6 +236,7 @@ const ACTION_TEXT_PASS = 'actionTextPass'
 const ACTION_TEXT_NO_MATCH = 'actionTextNoMatch'
 const ACTION_TEXT_YAHOO_MOVIE = 'actionTextYahooMovie'
 const ACTION_TEXT_DRAW_BEAUTY = 'actionTextDrawBeauty'
+const ACTION_TEXT_SEARCH_PTT_MOVIE = 'actionTextSearchPttMovie'
 
 
 
@@ -250,5 +251,6 @@ module.exports = {
     ACTION_TEXT_PASS,
     ACTION_TEXT_NO_MATCH,
     ACTION_TEXT_YAHOO_MOVIE,
-    ACTION_TEXT_DRAW_BEAUTY
+    ACTION_TEXT_DRAW_BEAUTY,
+    ACTION_TEXT_SEARCH_PTT_MOVIE
 }
