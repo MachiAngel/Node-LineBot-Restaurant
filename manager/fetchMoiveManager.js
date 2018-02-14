@@ -115,10 +115,11 @@ const parseFirebaseMovieDataToLineTemplate = (resultArray) => {
         description += `IMDB評價: ${imdb_rate}/10\n`
         description += `PTT 好雷:${pttMovieGoodCount} / 負雷:${pttMovieBadCount}`
         
+        
         const column = {
             "thumbnailImageUrl": `${poster_url}`,
             "imageBackgroundColor": "#FFFFFF",
-            "title": `${title}`,
+            "title": title,
             "text": description,
             "actions":[action1,action2]
         }
