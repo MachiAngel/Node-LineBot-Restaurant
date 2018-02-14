@@ -2,6 +2,7 @@ const {pgdb} = require('../db/pgdb')
 const {FirebaseDb} = require('../db/firebaseDb')
 const {replaceCHNumToNumAndlowerCase} = require('../util/publicfuction')
 const moment = require('moment')
+const _ = require('lodash')
 
 //用關鍵字找ptt電影版
 const getPttMoiveTemplate = async (str) => {
@@ -74,6 +75,7 @@ const getYahooMovieDataTemplate = async () => {
 
 //變成吃所有筆數 array ->回傳20筆 分兩次
 const parseFirebaseMovieDataToLineTemplate = (resultArray) => {
+    
     const columns = resultArray.map((movieObject) => {
         const {imdb_rate, movieTime_url, movie_length
             , movie_name_ch, movie_name_en, poster_url
@@ -126,28 +128,24 @@ const parseFirebaseMovieDataToLineTemplate = (resultArray) => {
     
     
     //檢查回傳數量
-    let limitColumns = []
-    if (columns.length > 10) {
-        limitColumns = columns.slice(0,10)
-    }else {
-        limitColumns = columns
-    }
+    const chunkColumns = _.chunk(columns,10)
     
-    // limitColumns = columns.slice(0,1)
-    
-    
-    const carouselTemplate = {
-        "type": "template",
-        "altText": "近期20筆上映電影",
-        "template": {
-            "type": "carousel",
-            "columns":limitColumns,
-            "imageAspectRatio": "rectangle",
-            "imageSize": "cover"
+    const templates = chunkColumns.map(chunkColumn => {
+        const carouselTemplate = {
+            "type": "template",
+            "altText": "近期10筆上映電影",
+            "template": {
+                "type": "carousel",
+                "columns":chunkColumn,
+                "imageAspectRatio": "rectangle",
+                "imageSize": "cover"
+            }
         }
-    }
+        return carouselTemplate
+    })
     
-    return carouselTemplate
+    
+    return templates
 }
 
 const getPttMovieArticlesTemplate = async (title,title_s) => {
