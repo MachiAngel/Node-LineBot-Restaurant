@@ -9,6 +9,7 @@ const util = require('util')
 const {firebaseManager} = require('./db/fetchFirebase')
 const beautyManager = require('./manager/fetchBeautyManager')
 const pttMovieManager = require('./manager/fetchMoiveManager')
+const beauty = require('./controller/beauty')
 
 const avoidDict = {}
 
@@ -37,7 +38,7 @@ const linebotParser = bot.parser()
 
 bot.on('message', function(event) {
     // 把收到訊息的 event 印出來
-    // console.log(event)
+    console.log(event.message)
     switch (event.message.type) {
         case 'text':
             const originalString = event.message.text
@@ -134,7 +135,7 @@ bot.on('message', function(event) {
             //     }).catch(e => {
             //      console.log(e.message)
             // });
-
+            
             break;
 
         default:
@@ -236,6 +237,9 @@ app.post('/webhook', parser, function (req, res) {
 });
 
 
+app.get('/beautyarticles', (req,res) => {beauty.getBeautyArticle(req,res)})
+app.get('/randomimage', (req,res) => {beauty.getRandomImage(req,res)})
+app.get('/beautyarticles/:id', (req,res) => {beauty.getBeautyArticleById(req,res)})
 
 // 在 localhost 走 8080 port
 let server = app.listen(process.env.PORT || 8080, function() {
