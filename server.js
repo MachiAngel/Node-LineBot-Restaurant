@@ -237,7 +237,7 @@ app.post('/webhook', parser, function (req, res) {
 });
 
 
-app.get('/beautyarticles', (req,res) => {beauty.getBeautyArticle(req,res)})
+app.get('/beautyarticles', (req,res) => {beauty.getBeautyArticles(req,res)})
 app.get('/randomimage', (req,res) => {beauty.getRandomImage(req,res)})
 app.get('/beautyarticles/:id', (req,res) => {beauty.getBeautyArticleById(req,res)})
 
