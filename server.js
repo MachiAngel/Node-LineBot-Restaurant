@@ -42,6 +42,15 @@ bot.on('message', function(event) {
     switch (event.message.type) {
         case 'text':
             const originalString = event.message.text
+
+            if (originalString === '123') {
+                event.source.profile().then(function (profile) {
+                    return event.reply('Hello ' + profile.displayName + ' ' + profile.userId);
+                });
+                return
+            }
+
+
             const messageObject = HandleIncoming_TEXT.switchIncomingType(originalString)
             switch (messageObject.type) {
                 case ACTION_TEXT_YAHOO_MOVIE:
